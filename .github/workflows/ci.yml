@@ -209,44 +209,53 @@ jobs:
     # The platform's ios-ci runs only BaoBuddyTests, on one iPhone. This job runs the whole
     # BaoBuddy scheme (unit tests plus BaoBuddyUITests) on an iPhone and an iPad, so iPad-only
     # layout tests actually execute. Xcode and the iOS runtime come from .github/ios-release.json.
-    name: iOS App & iPad Layout Tests
+    name: iOS App & Layout Tests (${{ matrix.device }})
     runs-on: xcode-27
     timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - device: iPhone
+            type: iPhone-18-Pro
+          - device: iPad
+            type: iPad-Pro-13-inch-M5-12GB
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           persist-credentials: false
-      - name: Select Xcode and create iPhone and iPad simulators
+      - name: Select Xcode and boot the test destination
+        env:
+          DEVICE_TYPE: ${{ matrix.type }}
         run: |
           set -euo pipefail
-          developer_dir=$(jq -r .xcode.path .github/ios-release.json)
-          runtime_version=$(jq -r .xcode.runtime .github/ios-release.json)
-          export DEVELOPER_DIR="$developer_dir"
-          xcodebuild -version
+          export DEVELOPER_DIR
+          DEVELOPER_DIR=$(jq -er .xcode.path .github/ios-release.json)
+          runtime_version=$(jq -er .xcode.runtime .github/ios-release.json)
           runtime="com.apple.CoreSimulator.SimRuntime.iOS-${runtime_version//./-}"
-          iphone=$(xcrun simctl create "CI iPhone 18 Pro" com.apple.CoreSimulator.SimDeviceType.iPhone-18-Pro "$runtime")
-          ipad=$(xcrun simctl create "CI iPad Pro 13-inch (M5)" com.apple.CoreSimulator.SimDeviceType.iPad-Pro-13-inch-M5-12GB "$runtime")
-          # Finish first-boot setup before testing, so UI tests don't race a busy new simulator.
-          for id in "$iphone" "$ipad"; do xcrun simctl bootstatus "$id" -b; done
+          id=$(xcrun simctl create "CI $DEVICE_TYPE" "com.apple.CoreSimulator.SimDeviceType.$DEVICE_TYPE" "$runtime")
           {
-            echo "DEVELOPER_DIR=$developer_dir"
-            echo "IOS_SIM=platform=iOS Simulator,id=$iphone"
-            echo "IPAD_SIM=platform=iOS Simulator,id=$ipad"
-            echo "CI_SIMULATORS=$iphone $ipad"
+            echo "DEVELOPER_DIR=$DEVELOPER_DIR"
+            echo "CI_SIMULATOR=$id"
           } >> "$GITHUB_ENV"
-      - name: Run unit and UI tests on iPhone and iPad
-        run: make test-ios TEST_RESULTS_DIR=build/test-results
-      - name: Upload test results
+          xcrun simctl bootstatus "$id" -b
+      - name: Run unit and UI tests
+        run: |
+          mkdir -p build/test-results
+          xcodebuild test -project BaoBuddy.xcodeproj -scheme BaoBuddy \
+            -destination "platform=iOS Simulator,id=$CI_SIMULATOR" \
+            -parallel-testing-enabled NO -onlyUsePackageVersionsFromResolvedFile \
+            -resultBundlePath build/test-results/tests.xcresult CODE_SIGNING_ALLOWED=NO
+      - name: Upload test results on failure
         if: failure()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
-          name: baobuddy-ios-test-results
+          name: baobuddy-ios-test-results-${{ matrix.device }}
           path: build/test-results/
           retention-days: 14
-      - name: Delete CI simulators
-        if: always()
-        run: |
-          for id in ${CI_SIMULATORS:-}; do xcrun simctl delete "$id" || true; done
+      - name: Delete CI simulator
+        if: always() && env.CI_SIMULATOR != ''
+        run: xcrun simctl delete "$CI_SIMULATOR"
   gate:
     name: CI Gate
     # Always reports, so a skipped or cancelled job can't let a change through.
