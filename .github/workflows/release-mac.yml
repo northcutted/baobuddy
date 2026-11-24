@@ -30,7 +30,7 @@ permissions:
 jobs:
   build:
     name: Build BaoBuddyHelper (Universal, unsigned)
-    runs-on: macos-15
+    runs-on: xcode-27
     timeout-minutes: 30
     outputs:
       version: ${{ steps.meta.outputs.version }}
@@ -40,6 +40,12 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           persist-credentials: false
+      - name: Select the project's Swift toolchain
+        run: |
+          developer_dir=$(jq -er '.xcode.path' .github/ios-release.json)
+          test -x "$developer_dir/usr/bin/xcodebuild"
+          echo "DEVELOPER_DIR=$developer_dir" >> "$GITHUB_ENV"
+
 
       - name: Determine and validate release version
         id: meta

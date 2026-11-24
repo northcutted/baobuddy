@@ -1145,10 +1145,6 @@ struct MacSettingsView: View {
 
     // MARK: - Help & About Tab
 
-    private static let repoURL = URL(string: "https://github.com/northcutted/baobuddy")!
-    private static let issuesURL = URL(string: "https://github.com/northcutted/baobuddy/issues/new")!
-    private static let releasesURL = URL(string: "https://github.com/northcutted/baobuddy/releases")!
-
     private var appVersion: String {
         Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.1.0"
     }
@@ -1322,24 +1318,26 @@ struct MacSettingsView: View {
             }
 
             Section {
-                externalLinkRow(
-                    title: "Documentation & Source Code",
-                    subtitle: "github.com/northcutted/baobuddy",
-                    symbol: "book.closed",
-                    url: Self.repoURL
-                )
-                externalLinkRow(
-                    title: "Report an Issue or Request a Feature",
-                    subtitle: "Open a GitHub issue with steps to reproduce",
-                    symbol: "ladybug",
-                    url: Self.issuesURL
-                )
-                externalLinkRow(
-                    title: "Releases & Changelog",
-                    subtitle: "Check for newer macOS and CLI releases",
-                    symbol: "arrow.down.circle",
-                    url: Self.releasesURL
-                )
+                if let repoURL = URL(string: "https://github.com/northcutted/baobuddy") {
+                    externalLinkRow(
+                        title: "Documentation & Source Code",
+                        subtitle: "github.com/northcutted/baobuddy",
+                        symbol: "book.closed",
+                        url: repoURL
+                    )
+                    externalLinkRow(
+                        title: "Report an Issue or Request a Feature",
+                        subtitle: "Open a GitHub issue with steps to reproduce",
+                        symbol: "ladybug",
+                        url: repoURL.appending(path: "issues/new")
+                    )
+                    externalLinkRow(
+                        title: "Releases & Changelog",
+                        subtitle: "Check for newer macOS and CLI releases",
+                        symbol: "arrow.down.circle",
+                        url: repoURL.appending(path: "releases")
+                    )
+                }
 
                 HStack(spacing: 12) {
                     Text("Includes app version, macOS build, and key/server counts (no secrets).")
