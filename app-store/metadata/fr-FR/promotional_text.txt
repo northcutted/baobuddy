@@ -1,0 +1,1 @@
+Approuvez des autorisations OpenBao et Vault limitées dans le temps grâce à la biométrie matérielle — essayez tout de suite le mode démo intégré.

@@ -1,0 +1,5 @@
+İlk herkese açık beta (v0.1.0):
+• OpenBao ve Vault sunucuları için donanım destekli Secure Enclave ES256 JWT kimlik doğrulaması
+• Sunucu gerektirmeden anında çevrimdışı keşif için yerleşik Demo Modu ("Demoyu Dene")
+• Dinamik ilke onay sayfaları, kimlik bilgisi uzantıları, QR ile eşleme ve Canlı Etkinlik geri sayımları
+• 2 dakikalık yalnızca yerel panoya sahip Doğrudan Token modu ve accessor iptaliyle Uzak SSH ana bilgisayar teslimatı

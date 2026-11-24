@@ -1,0 +1,5 @@
+Prima beta pubblica (v0.1.0):
+• Autenticazione JWT ES256 con Secure Enclave protetta dall'hardware per server OpenBao e Vault
+• Modalità demo integrata ("Prova la demo") per provare subito l'app offline, senza server
+• Fogli di approvazione dinamici delle policy, estensioni credenziali, abbinamento tramite QR e conto alla rovescia nelle Attività in tempo reale
+• Modalità token diretto con appunti a 2 minuti solo locali e consegna a host SSH remoto con revoca tramite accessor

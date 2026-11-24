@@ -1,0 +1,149 @@
+name: Release Receiver
+
+on:
+  push:
+    tags: ["receiver-v*"]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Receiver version without a prefix (e.g. 0.1.0)
+        required: true
+        type: string
+      draft:
+        description: Keep the GitHub release as a draft
+        default: true
+        type: boolean
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.event_name == 'push' && github.ref_name || format('receiver-v{0}', inputs.version) }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    if: github.event_name == 'push' || github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    outputs:
+      version: ${{ steps.meta.outputs.version }}
+      commit: ${{ steps.meta.outputs.commit }}
+      manifest_sha256: ${{ steps.build.outputs.manifest_sha256 }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+
+      - name: Identify receiver release
+        id: meta
+        env:
+          INPUT_VERSION: ${{ inputs.version }}
+        run: |
+          if [[ "$GITHUB_EVENT_NAME" == push ]]; then
+            version=${GITHUB_REF_NAME#receiver-v}
+          else
+            version=$INPUT_VERSION
+          fi
+          if ! [[ "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*)?$ ]]; then
+            echo "::error::Invalid receiver release version"
+            exit 1
+          fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "commit=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5.6.0
+        with:
+          go-version-file: receiver/go.mod
+          cache: false
+
+      - name: Test and cross-compile receiver
+        id: build
+        working-directory: receiver
+        env:
+          VERSION: ${{ steps.meta.outputs.version }}
+        run: |
+          go vet ./...
+          make test
+          make dist VERSION="$VERSION"
+          digest=$(sha256sum dist/SHA256SUMS.txt)
+          echo "manifest_sha256=${digest%% *}" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: receiver-dist
+          path: |
+            receiver/dist/baobuddy-receiver-*
+            receiver/dist/SHA256SUMS.txt
+          if-no-files-found: error
+          retention-days: 3
+
+  release:
+    needs: build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    environment: receiver-release
+    permissions:
+      contents: write
+      id-token: write
+      attestations: write
+    steps:
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: receiver-dist
+          path: dist
+
+      - name: Verify release assets against the build manifest
+        working-directory: dist
+        env:
+          EXPECTED_MANIFEST_SHA256: ${{ needs.build.outputs.manifest_sha256 }}
+          LC_ALL: C
+        run: |
+          printf '%s  SHA256SUMS.txt\n' "$EXPECTED_MANIFEST_SHA256" | sha256sum --check -
+          sha256sum baobuddy-receiver-* | cmp - SHA256SUMS.txt
+
+      - name: Attest receiver binaries and checksums
+        uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8
+        with:
+          subject-path: |
+            dist/baobuddy-receiver-*
+            dist/SHA256SUMS.txt
+
+      - name: Publish receiver release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          VERSION: ${{ needs.build.outputs.version }}
+          BUILD_COMMIT: ${{ needs.build.outputs.commit }}
+          DRAFT: ${{ github.event_name == 'workflow_dispatch' && inputs.draft }}
+        run: |
+          set -euo pipefail
+          tag="receiver-v$VERSION"
+          # Pin manual drafts as well as published releases to the commit that produced the manifest.
+          if [[ "$GITHUB_EVENT_NAME" == workflow_dispatch ]]; then
+            refs=$(gh api "repos/$GH_REPO/git/matching-refs/tags/$tag")
+            if ! jq -e --arg ref "refs/tags/$tag" 'any(.[]; .ref == $ref)' <<< "$refs" >/dev/null; then
+              gh api --method POST "repos/$GH_REPO/git/refs" -f ref="refs/tags/$tag" -f sha="$BUILD_COMMIT" >/dev/null
+            fi
+          fi
+          tagged_commit=$(gh api --method GET "repos/$GH_REPO/commits" -f sha="refs/tags/$tag" -F per_page=1 --jq '.[0].sha')
+          if [[ "$tagged_commit" != "$BUILD_COMMIT" ]]; then
+            echo "::error::$tag does not point at the receiver build commit"
+            exit 1
+          fi
+
+          files=(dist/baobuddy-receiver-* dist/SHA256SUMS.txt)
+          if existing=$(gh release view "$tag" --json isDraft --jq .isDraft); then
+            if [[ "$existing" != true ]]; then
+              echo "::error::Receiver release $tag is already published"
+              exit 1
+            fi
+            gh release upload "$tag" "${files[@]}" --clobber
+          else
+            args=(--draft --verify-tag --target "$BUILD_COMMIT" --title "BaoBuddy Receiver $VERSION" --generate-notes)
+            if [[ "$VERSION" == *-* ]]; then args+=(--prerelease); fi
+            gh release create "$tag" "${files[@]}" "${args[@]}"
+          fi
+          if [[ "$DRAFT" != true ]]; then
+            gh release edit "$tag" --draft=false --latest=false
+          fi

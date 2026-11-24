@@ -1,0 +1,12 @@
+BaoBuddy replaces standing secrets and passwords with hardware-backed, short-lived grants for your OpenBao or Vault server.
+
+Your device generates a separate non-exportable EC P-256 key for each server inside the Secure Enclave, protected by biometrics. When you or an automated workflow needs temporary access, BaoBuddy shows the exact server, target host, policies, duration, and audit reason before signing a 30-second ES256 JWT.
+
+KEY FEATURES
+• Hardware-Backed Authentication: Non-exportable P-256 keys gated by biometrics on every approval.
+• Scoped, Time-Boxed Grants: Mint non-renewable, orphan tokens constrained to explicit server-side policies and durations.
+• Built-In Demo Mode: Tap "Try Demo" on launch to explore the full approval, credential extension, and revocation workflow in memory without deploying a server.
+• Multi-Server & Enterprise Ready: Connect multiple environments with pinned TLS certificates, optional namespaces, audit reason rules, and declarative credential extensions.
+• Direct Token & Remote SSH Delivery: Copy a short-lived token (with 2-minute local-only clipboard expiry and 1-tap revocation) or deliver grants and ephemeral SSH user certificates directly to a remote host over pinned-key SSH.
+• Live Activities: Track active grant countdowns on your Lock Screen and Dynamic Island, with server and scope details automatically redacted when locked.
+• Privacy First: Zero analytics, zero tracking, zero third-party servers. Everything stays between your device and your infrastructure.

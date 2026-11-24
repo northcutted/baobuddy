@@ -1,0 +1,43 @@
+.DS_Store
+.build/
+.swiftpm/
+build/
+DerivedData/
+xcuserdata/
+*.xcuserstate
+*.ipa
+*.dSYM.zip
+*.dSYM
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/test_output/
+fastlane/screenshots/
+__pycache__/
+deps.json
+baobuddy-sbom.cdx.json
+receiver/dist/
+receiver/baobuddy-receiver
+
+# App Store screenshots: raw captures stay ignored except en-US, as in PicStrip;
+# the other locales are reproducible with `make screenshots`. The composed
+# marketing PNGs in app-store/screenshots/ are the reviewed release input.
+app-store/screenshots-raw/**/*.png
+!app-store/screenshots-raw/en-US/*.png
+app-store/screenshots-raw/**/*.html
+app-store/screenshots-raw/test_output/
+fastlane/screenshot_logs/
+
+# App Review contact and account details are supplied privately to Apple.
+app-store/metadata/review_information/first_name.txt
+app-store/metadata/review_information/last_name.txt
+app-store/metadata/review_information/email_address.txt
+app-store/metadata/review_information/phone_number.txt
+app-store/metadata/review_information/demo_user.txt
+app-store/metadata/review_information/demo_password.txt
+
+# Local signing material
+*.p8
+*.p12
+*.provisionprofile
+*.mobileprovision
+fastlane/api_key.json

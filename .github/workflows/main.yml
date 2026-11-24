@@ -1,0 +1,28 @@
+name: Release Prep
+# Builds and verifies an App Store candidate on every push to main. Nothing is uploaded here;
+# "Release" (ios-release.yml) promotes a chosen candidate to TestFlight or the App Store.
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch: {}
+permissions:
+  contents: read
+concurrency:
+  group: release-prep-main
+  cancel-in-progress: false
+jobs:
+  prepare:
+    uses: northcutted/ios-release-workflows/.github/workflows/prepare.yml@a3c32bcae61a8a174f3c5ea6a4ba0b623aaaf33a
+    with:
+      config: .github/ios-release.json
+      platform_revision: a3c32bcae61a8a174f3c5ea6a4ba0b623aaaf33a
+    permissions:
+      contents: write
+      actions: read
+      id-token: write
+      attestations: write
+      artifact-metadata: write
+    secrets:
+      MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+      MATCH_SSH_PRIVATE_KEY: ${{ secrets.MATCH_SSH_PRIVATE_KEY }}

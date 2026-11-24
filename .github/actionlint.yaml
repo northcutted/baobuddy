@@ -1,0 +1,5 @@
+# xcode-27 is a GitHub-hosted public preview label (the iOS release platform's runner),
+# not a self-hosted runner.
+self-hosted-runner:
+  labels:
+    - xcode-27

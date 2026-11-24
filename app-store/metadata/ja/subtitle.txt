@@ -1,0 +1,1 @@
+Vault と OpenBao の生体認証キー

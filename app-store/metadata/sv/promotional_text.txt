@@ -1,0 +1,1 @@
+Godkänn tidsbegränsade OpenBao- och Vault-behörigheter med hårdvaruskyddad biometri – prova det inbyggda demoläget direkt.

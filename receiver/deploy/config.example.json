@@ -1,0 +1,11 @@
+{
+  "openbao_addr": "https://vault.corp.example:8200",
+  "namespace": "",
+  "ca_cert_path": "/etc/baobuddy/openbao-ca.crt",
+  "state_dir": "/run/baobuddy",
+  "ssh_pubkey_path": "/etc/baobuddy/agent_ed25519.pub",
+  "file_mode": "0600",
+  "max_ttl_seconds": 43200,
+  "allowed_policies": ["app-read"],
+  "required_meta": { "on": "remote" }
+}

@@ -1,0 +1,48 @@
+name: Release
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: Release action
+        type: choice
+        options:
+          - Upload to TestFlight
+          - Prepare App Store submission
+          - Update store metadata
+          - Update metadata and request review
+        default: Upload to TestFlight
+        required: true
+      source:
+        description: Preparation or previous TestFlight run URL/ID; immutable release tag for metadata
+        type: string
+        required: true
+      metadata_commit:
+        description: Metadata actions only; exact reviewed commit, or blank for this main revision
+        type: string
+        default: ""
+permissions:
+  contents: read
+concurrency:
+  group: promote-main
+  cancel-in-progress: false
+jobs:
+  promote:
+    uses: northcutted/ios-release-workflows/.github/workflows/release.yml@a3c32bcae61a8a174f3c5ea6a4ba0b623aaaf33a
+    with:
+      config: .github/ios-release.json
+      platform_revision: a3c32bcae61a8a174f3c5ea6a4ba0b623aaaf33a
+      action: ${{ inputs.action }}
+      source: ${{ inputs.source }}
+      metadata_commit: ${{ inputs.metadata_commit }}
+    permissions:
+      contents: read
+      actions: read
+      id-token: write
+      attestations: write
+      artifact-metadata: write
+    secrets:
+      APP_STORE_CONNECT_API_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
+      APP_STORE_CONNECT_API_KEY_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ISSUER_ID }}
+      APP_STORE_CONNECT_API_KEY_CONTENT: ${{ secrets.APP_STORE_CONNECT_API_KEY_CONTENT }}
+      RELEASE_APP_ID: ${{ secrets.RELEASE_APP_ID }}
+      RELEASE_APP_PRIVATE_KEY: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}

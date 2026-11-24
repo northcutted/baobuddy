@@ -1,0 +1,1 @@
+secretos,ssh,devops,seguridad,jwt,token,sysadmin,infraestructura,acceso,face id,contraseña

@@ -1,0 +1,12 @@
+BaoBuddy ersätter permanenta hemligheter och lösenord med kortlivade, hårdvaruskyddade behörigheter för din OpenBao- eller Vault-server.
+
+Enheten skapar en separat, icke-exporterbar EC P-256-nyckel för varje server i Secure Enclave, skyddad med biometri. När du eller ett automatiserat arbetsflöde behöver tillfällig åtkomst visar BaoBuddy exakt server, målvärd, policyer, varaktighet och granskningsorsak innan en ES256-JWT som gäller i 30 sekunder signeras.
+
+HUVUDFUNKTIONER
+• Hårdvaruskyddad autentisering: icke-exporterbara P-256-nycklar som skyddas med biometri vid varje godkännande.
+• Avgränsade, tidsbegränsade behörigheter: skapa orphan-token som inte kan förnyas och som är begränsade till uttryckliga policyer och varaktigheter på servern.
+• Inbyggt demoläge: tryck på ”Prova demo” vid start för att utforska hela flödet för godkännande, tillägg för inloggningsuppgifter och återkallning i minnet, utan att installera en server.
+• Flera servrar, redo för företag: anslut flera miljöer med fästa TLS-certifikat, valfria namnområden, regler för granskningsorsak och deklarativa tillägg för inloggningsuppgifter.
+• Direkt token och SSH-leverans till fjärrvärd: kopiera en kortlivad token (urklipp som rensas efter 2 minuter, endast lokalt, återkallning med ett tryck) eller leverera behörigheter och tillfälliga SSH-användarcertifikat direkt till en fjärrvärd via SSH med fäst nyckel.
+• Live Activity: följ nedräkningen för aktiva behörigheter på låsskärmen och i Dynamic Island. Server- och omfattningsuppgifter döljs automatiskt när enheten är låst.
+• Integritet först: ingen analys, ingen spårning, inga servrar från tredje part. Allt stannar mellan din enhet och din infrastruktur.

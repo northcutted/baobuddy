@@ -1,0 +1,5 @@
+Initial public beta (v0.1.0):
+• Hardware-backed Secure Enclave ES256 JWT authentication for OpenBao and Vault servers
+• Built-in Demo Mode ("Try Demo") for instant offline walkthroughs without a server
+• Dynamic policy approval sheets, credential extensions, QR pairing, and Live Activity countdowns
+• Direct Token mode with 2-minute local-only clipboard and Remote SSH host delivery with accessor revocation

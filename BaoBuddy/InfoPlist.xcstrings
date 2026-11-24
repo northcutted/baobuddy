@@ -1,0 +1,343 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "CFBundleDisplayName" : {
+      "comment" : "Bundle display name: the app name under its icon. BaoBuddy is the product name and is not translated.",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "BaoBuddy"
+          }
+        }
+      },
+      "shouldTranslate" : false
+    },
+    "NSCameraUsageDescription" : {
+      "comment" : "Privacy - Camera Usage Description. Shown when the app first asks for the camera. OpenBao and Vault are product names.",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يستخدم BaoBuddy الكاميرا لمسح رموز QR لاقتران خوادم OpenBao / Vault من Mac أو Terminal."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BaoBuddy verwendet die Kamera, um Kopplungs-QR-Codes für OpenBao / Vault-Server von deinem Mac oder aus dem Terminal zu scannen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "BaoBuddy uses the camera to scan OpenBao / Vault server pairing QR codes from your Mac or Terminal."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BaoBuddy usa la cámara para escanear códigos QR de vinculación de servidores OpenBao / Vault desde tu Mac o Terminal."
+          }
+        },
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BaoBuddy usa la cámara para escanear códigos QR de vinculación de servidores OpenBao / Vault desde tu Mac o Terminal."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BaoBuddy utilise l’appareil photo pour scanner les codes QR de jumelage de serveurs OpenBao / Vault depuis votre Mac ou Terminal."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BaoBuddy usa la fotocamera per scansionare i codici QR di abbinamento dei server OpenBao / Vault dal Mac o dal Terminale."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BaoBuddy は、Mac またはターミナルに表示される OpenBao/Vault サーバのペアリング用 QR コードをスキャンするためにカメラを使用します。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BaoBuddy는 Mac 또는 터미널에 표시되는 OpenBao / Vault 서버 페어링 QR 코드를 스캔하기 위해 카메라를 사용합니다."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BaoBuddy gebruikt de camera om QR-codes voor het koppelen van OpenBao- / Vault-servers te scannen vanaf je Mac of Terminal."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BaoBuddy używa aparatu do skanowania kodów QR parowania serwerów OpenBao / Vault z Maca lub Terminalu."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O BaoBuddy usa a câmera para escanear códigos QR de pareamento de servidores OpenBao / Vault exibidos no Mac ou no Terminal."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O BaoBuddy usa a câmara para ler códigos QR de emparelhamento de servidores OpenBao / Vault apresentados no Mac ou no Terminal."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BaoBuddy använder kameran för att skanna QR-koder för parkoppling av OpenBao- / Vault-servrar från din Mac eller Terminal."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BaoBuddy, Mac'inizden veya Terminal'den OpenBao / Vault sunucu eşleme QR kodlarını taramak için kamerayı kullanır."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BaoBuddy 使用相机扫描 Mac 或终端上显示的 OpenBao/Vault 服务器配对 QR 码。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BaoBuddy 使用相機掃描 Mac 或終端機上顯示的 OpenBao/Vault 伺服器配對 QR 碼。"
+          }
+        }
+      }
+    },
+    "NSFaceIDUsageDescription" : {
+      "comment" : "Privacy - Face ID Usage Description. Shown when the app first asks to use Face ID. Face ID and Secure Enclave are Apple product names.",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يستخدم BaoBuddy تقنية Face ID لتوقيع رموز مصادقة OpenBao قصيرة الأجل في Secure Enclave."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BaoBuddy verwendet Face ID, um kurzlebige OpenBao-Authentifizierungstokens in der Secure Enclave zu signieren."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "BaoBuddy uses Face ID to sign short-lived OpenBao authentication tokens in the Secure Enclave."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BaoBuddy usa Face ID para firmar tokens de autenticación de OpenBao de corta duración en el Secure Enclave."
+          }
+        },
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BaoBuddy usa Face ID para firmar tokens de autenticación de OpenBao de corta duración en el Secure Enclave."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BaoBuddy utilise Face ID pour signer des jetons d’authentification OpenBao éphémères dans la Secure Enclave."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BaoBuddy usa Face ID per firmare token di autenticazione OpenBao di breve durata nel Secure Enclave."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BaoBuddy は、Secure Enclave で短期間有効な OpenBao 認証トークンに署名するために Face ID を使用します。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BaoBuddy는 Secure Enclave에서 단기 OpenBao 인증 토큰에 서명하기 위해 Face ID를 사용합니다."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BaoBuddy gebruikt Face ID om kortlevende OpenBao-authenticatietokens te ondertekenen in de Secure Enclave."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BaoBuddy używa Face ID do podpisywania krótkotrwałych tokenów uwierzytelniania OpenBao w Secure Enclave."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O BaoBuddy usa o Face ID para assinar tokens de autenticação de curta duração do OpenBao no Secure Enclave."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O BaoBuddy usa o Face ID para assinar tokens de autenticação de curta duração do OpenBao no Secure Enclave."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BaoBuddy använder Face ID för att signera kortlivade autentiseringstoken för OpenBao i Secure Enclave."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BaoBuddy, Secure Enclave'de kısa ömürlü OpenBao kimlik doğrulama token'ları imzalamak için Face ID'yi kullanır."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BaoBuddy 使用 Face ID 在 Secure Enclave 中签署短期 OpenBao 认证令牌。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BaoBuddy 使用 Face ID 在 Secure Enclave 中簽署短期 OpenBao 認證權杖。"
+          }
+        }
+      }
+    },
+    "NSLocalNetworkUsageDescription" : {
+      "comment" : "Privacy - Local Network Usage Description. Shown when the app first asks for local network access. A grant target is the computer that receives access grants.",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يتصل BaoBuddy بخادم OpenBao وهدف المنح المحلي عبر شبكتك الخاصة."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BaoBuddy verbindet sich über dein privates Netzwerk mit deinem OpenBao-Server und dem lokalen Freigabeziel."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "BaoBuddy connects to your OpenBao server and local grant target over your private network."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BaoBuddy se conecta a tu servidor OpenBao y al destino local de autorizaciones a través de tu red privada."
+          }
+        },
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BaoBuddy se conecta a tu servidor OpenBao y al destino local de autorizaciones a través de tu red privada."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BaoBuddy se connecte à votre serveur OpenBao et à la cible d’autorisation locale via votre réseau privé."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BaoBuddy si connette al tuo server OpenBao e alla destinazione locale delle autorizzazioni tramite la tua rete privata."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BaoBuddy は、プライベートネットワーク経由で OpenBao サーバとローカルのグラント先に接続します。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BaoBuddy는 사설 네트워크를 통해 OpenBao 서버 및 로컬 접근 권한 대상에 연결합니다."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BaoBuddy maakt via je privénetwerk verbinding met je OpenBao-server en het lokale machtigingsdoel."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BaoBuddy łączy się z Twoim serwerem OpenBao i lokalnym celem uprawnień przez sieć prywatną."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O BaoBuddy se conecta ao seu servidor OpenBao e ao destino local das concessões pela sua rede privada."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O BaoBuddy liga-se ao seu servidor OpenBao e ao destino local das concessões através da sua rede privada."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BaoBuddy ansluter till din OpenBao-server och ditt lokala behörighetsmål via ditt privata nätverk."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BaoBuddy, özel ağınız üzerinden OpenBao sunucunuza ve yerel izin hedefinize bağlanır."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BaoBuddy 通过你的私有网络连接到 OpenBao 服务器和本地授权目标。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BaoBuddy 透過你的私人網路連線至 OpenBao 伺服器和本機授權目標。"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

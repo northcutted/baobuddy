@@ -1,0 +1,1 @@
+hemligheter,säkerhet,ssh,devops,jwt,token,sysadmin,lösenord,autentisering,infrastruktur,secrets

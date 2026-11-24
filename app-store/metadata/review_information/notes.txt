@@ -1,0 +1,16 @@
+BaoBuddy is an open-source client for self-hosted OpenBao and Vault servers. No account or external server is required to review the app.
+
+HOW TO TEST (BUILT-IN DEMO MODE)
+1. Launch BaoBuddy and tap "Try Demo" on the welcome screen (or open the Settings tab and tap "Try Demo Mode").
+2. Demo mode creates an in-memory simulated server ("Demo OpenBao" at demo.baobuddy.invalid) and a simulated remote host ("Demo Build Runner"). Nothing leaves the device, and no demo data is saved to disk.
+3. On the Grants tab:
+   - Choose either "Remote Host" or "Direct Token" under Demo Delivery.
+   - Select policies (e.g., Database Read-Only, Kubernetes Deploy), optionally toggle "Demo Postgres Credentials", enter an audit reason, and tap "Review & Approve".
+   - Authenticate with Face ID / Touch ID on the approval sheet. Demo mode cryptographically verifies the real Secure Enclave ES256 JWT signature in memory, displays the active grant (or direct token + credentials), and starts a Live Activity countdown.
+   - Tap "Revoke Grant" (or "Revoke Token") to verify revocation.
+4. Tap "Exit Demo" in the top banner (or in Settings) to clear all simulated state.
+
+PERMISSIONS USED
+• Face ID: Protects the non-exportable Secure Enclave P-256 signing key.
+• Camera: Scans QR codes containing non-secret server connection profiles (Settings → Scan Pairing QR Code).
+• Local Network: Connects directly to user-configured private OpenBao/Vault servers and SSH hosts.

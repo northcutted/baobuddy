@@ -1,0 +1,277 @@
+name: Release macOS Helper
+
+# Two jobs, so third-party code never runs next to release credentials:
+# - `build` compiles the helper (including SwiftPM dependencies) with read-only permissions and
+#   no secrets, and uploads the unsigned app.
+# - `release` never checks out or builds code. It signs, notarizes, attests, and publishes the
+#   artifact from `build` with the signing secrets and `contents: write`.
+
+on:
+  # Mac helper and CLI releases use `helper-v*` tags. Plain `v*` tags belong to the
+  # iOS release platform, whose ruleset lets only its publisher App create them.
+  push:
+    tags:
+      - "helper-v*"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Release version without a prefix (e.g. 0.1.0); the tag is helper-v<version>"
+        required: true
+        type: string
+      draft:
+        description: "Create GitHub Release as a draft"
+        required: false
+        default: true
+        type: boolean
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build BaoBuddyHelper (Universal, unsigned)
+    runs-on: macos-15
+    timeout-minutes: 30
+    outputs:
+      version: ${{ steps.meta.outputs.version }}
+      tag: ${{ steps.meta.outputs.tag }}
+      draft: ${{ steps.meta.outputs.draft }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+
+      - name: Determine and validate release version
+        id: meta
+        # Inputs reach the script through env, never `${{ }}` inside `run`, so a crafted version
+        # string can't inject shell.
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          INPUT_VERSION: ${{ inputs.version }}
+          INPUT_DRAFT: ${{ inputs.draft }}
+        run: |
+          if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
+            VERSION="${INPUT_VERSION#helper-v}"
+            VERSION="${VERSION#v}"
+            DRAFT="$INPUT_DRAFT"
+          else
+            VERSION="${GITHUB_REF_NAME#helper-v}"
+            DRAFT="false"
+          fi
+          if ! [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.]+)?$ ]]; then
+            echo "::error::Invalid version '$VERSION'"
+            exit 1
+          fi
+          {
+            echo "version=${VERSION}"
+            echo "tag=helper-v${VERSION}"
+            echo "draft=${DRAFT}"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Run tests
+        run: swift test --force-resolved-versions
+
+      - name: Build universal release binary (arm64 + x86_64)
+        run: swift build -c release --arch arm64 --arch x86_64 --product BaoBuddyHelper --force-resolved-versions
+
+      - name: Assemble unsigned BaoBuddyHelper.app, SBOM, and Cask template
+        env:
+          VERSION: ${{ steps.meta.outputs.version }}
+        run: |
+          APP="dist/BaoBuddyHelper.app"
+          rm -rf dist build
+          mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources" build
+          cp .build/apple/Products/Release/BaoBuddyHelper "$APP/Contents/MacOS/BaoBuddyHelper"
+          cp MacHelper/Info.plist "$APP/Contents/Info.plist"
+          /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString ${VERSION}" "$APP/Contents/Info.plist"
+          /usr/libexec/PlistBuddy -c "Set :CFBundleVersion ${GITHUB_RUN_NUMBER}" "$APP/Contents/Info.plist"
+          xcrun actool BaoBuddy/AppIcon.icon --compile "$APP/Contents/Resources" \
+            --platform macosx --minimum-deployment-target 15.0 --app-icon AppIcon \
+            --output-partial-info-plist build/AppIcon-partial.plist >/dev/null
+          cp MacHelper/MenuBarGlyph*.png "$APP/Contents/Resources/"
+          swift package show-dependencies --format json > build/deps.json
+          python3 -I scripts/sbom.py build/deps.json dist/baobuddy-sbom.cdx.json
+          cp packaging/homebrew/baobuddy.rb dist/baobuddy.rb.template
+          # Preserve the executable bit through the artifact upload.
+          tar -C dist -cf unsigned.tar .
+
+      - name: Upload unsigned build
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: unsigned-helper
+          path: unsigned.tar
+          retention-days: 3
+
+  release:
+    name: Sign, Notarize, Attest & Publish
+    needs: build
+    # Only tags, or a manual run from main, can reach the signing secrets.
+    if: github.event_name == 'push' || github.ref == 'refs/heads/main'
+    # The `helper-release` environment holds the Developer ID and notarization secrets and needs
+    # a reviewer's approval for every release (scripts/provision-repo.sh creates it).
+    environment: helper-release
+    runs-on: macos-15
+    timeout-minutes: 30
+    permissions:
+      contents: write
+      id-token: write
+      attestations: write
+    steps:
+      - name: Download unsigned build
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: unsigned-helper
+
+      - name: Unpack
+        run: |
+          mkdir -p dist
+          tar -C dist -xf unsigned.tar
+
+      - name: Import Developer ID certificate
+        env:
+          CERT_P12_B64: ${{ secrets.DEVELOPER_ID_CERT_P12 }}
+          CERT_PASSWORD: ${{ secrets.DEVELOPER_ID_CERT_PASSWORD }}
+        run: |
+          KEYCHAIN="$RUNNER_TEMP/baobuddy-signing.keychain-db"
+          KEYCHAIN_PASSWORD="$(openssl rand -hex 32)"
+          echo "::add-mask::$KEYCHAIN_PASSWORD"
+          echo "$CERT_P12_B64" | base64 --decode > "$RUNNER_TEMP/dev-id.p12"
+          security create-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN"
+          security set-keychain-settings -lut 3600 "$KEYCHAIN"
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN"
+          # Only codesign may use the key; no `-A` (which would allow any process).
+          security import "$RUNNER_TEMP/dev-id.p12" -P "$CERT_PASSWORD" -T /usr/bin/codesign -t cert -f pkcs12 -k "$KEYCHAIN"
+          security list-keychain -d user -s "$KEYCHAIN"
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN" >/dev/null
+          rm -f "$RUNNER_TEMP/dev-id.p12"
+
+      - name: Codesign, notarize, staple, and package (.zip & .dmg)
+        env:
+          HELPER_PROFILE_BASE64: ${{ secrets.MAC_HELPER_PROFILE_BASE64 }}
+          SIGN_IDENTITY: ${{ secrets.DEVELOPER_ID_IDENTITY }}
+          NOTARY_KEY_B64: ${{ secrets.APP_STORE_CONNECT_API_KEY_P8 }}
+          NOTARY_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
+          NOTARY_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+          VERSION: ${{ needs.build.outputs.version }}
+        run: |
+          APP="dist/BaoBuddyHelper.app"
+          mkdir -p out
+          ZIP="out/BaoBuddyHelper-${VERSION}-macos.zip"
+          DMG="out/BaoBuddyHelper-${VERSION}-macos.dmg"
+
+          printf '%s' "$HELPER_PROFILE_BASE64" | base64 --decode > "$RUNNER_TEMP/helper.provisionprofile"
+          PROFILE="$APP/Contents/embedded.provisionprofile"
+          mv "$RUNNER_TEMP/helper.provisionprofile" "$PROFILE"
+          security cms -D -i "$PROFILE" -o "$RUNNER_TEMP/profile.plist"
+          ENT="$RUNNER_TEMP/entitlements.plist"
+          python3 -I - "$RUNNER_TEMP/profile.plist" "$ENT" <<'PYTHON'
+          import datetime, fnmatch, plistlib, sys
+          team = "BDQ47H73HH"
+          group = team + ".com.northcutt.BaoBuddy.Helper"
+          with open(sys.argv[1], "rb") as stream:
+              profile = plistlib.load(stream)
+          ent = profile["Entitlements"]
+          if not (profile["ExpirationDate"] > datetime.datetime.now(datetime.timezone.utc).replace(tzinfo=None)
+                  and team in profile["TeamIdentifier"] and "OSX" in profile["Platform"]
+                  and profile.get("ProvisionsAllDevices") is True
+                  and ent.get("com.apple.application-identifier") == group
+                  and any(fnmatch.fnmatchcase(group, pat) for pat in ent.get("keychain-access-groups", []))):
+              sys.exit("Invalid Developer ID provisioning profile for the helper")
+          with open(sys.argv[2], "wb") as stream:
+              plistlib.dump({"com.apple.application-identifier": group,
+                             "com.apple.developer.team-identifier": team,
+                             "keychain-access-groups": [group]}, stream)
+          PYTHON
+          codesign --force --options runtime --timestamp --entitlements "$ENT" --sign "$SIGN_IDENTITY" "$APP"
+          codesign -d --extract-certificates="$RUNNER_TEMP/signer" "$APP"
+          python3 -I - "$RUNNER_TEMP/profile.plist" "$RUNNER_TEMP/signer0" <<'PYTHON'
+          import pathlib, plistlib, sys
+          if pathlib.Path(sys.argv[2]).read_bytes() not in plistlib.loads(pathlib.Path(sys.argv[1]).read_bytes())["DeveloperCertificates"]:
+              sys.exit("Signing certificate is absent from the helper provisioning profile")
+          PYTHON
+          codesign --verify --strict --verbose=2 "$APP"
+
+          ditto -c -k --keepParent "$APP" "$ZIP"
+
+          echo "$NOTARY_KEY_B64" | base64 --decode > "$RUNNER_TEMP/AuthKey.p8"
+          trap 'rm -f "$RUNNER_TEMP/AuthKey.p8"' EXIT
+          xcrun notarytool submit "$ZIP" \
+            --key "$RUNNER_TEMP/AuthKey.p8" \
+            --key-id "$NOTARY_KEY_ID" \
+            --issuer "$NOTARY_ISSUER_ID" \
+            --wait
+
+          xcrun stapler staple "$APP"
+          xcrun stapler validate "$APP"
+          spctl --assess --type execute --verbose=4 "$APP"
+
+          # Re-archive the stapled app for the final release ZIP and DMG.
+          rm -f "$ZIP"
+          ditto -c -k --keepParent "$APP" "$ZIP"
+
+          STAGE="$RUNNER_TEMP/dmg-stage"
+          rm -rf "$STAGE"
+          mkdir -p "$STAGE"
+          cp -R "$APP" "$STAGE/"
+          ln -s /Applications "$STAGE/Applications"
+          hdiutil create -volname "BaoBuddy ${VERSION}" -srcfolder "$STAGE" \
+            -ov -format UDZO "$DMG"
+          codesign --force --timestamp --sign "$SIGN_IDENTITY" "$DMG"
+          xcrun notarytool submit "$DMG" \
+            --key "$RUNNER_TEMP/AuthKey.p8" \
+            --key-id "$NOTARY_KEY_ID" \
+            --issuer "$NOTARY_ISSUER_ID" \
+            --wait
+          xcrun stapler staple "$DMG"
+
+          cp dist/baobuddy-sbom.cdx.json out/
+          (cd out && shasum -a 256 "$(basename "$ZIP")" "$(basename "$DMG")" baobuddy-sbom.cdx.json > SHA256SUMS.txt)
+          cat out/SHA256SUMS.txt
+
+          ZIP_SHA=$(awk -v f="$(basename "$ZIP")" '$2 == f { print $1 }' out/SHA256SUMS.txt)
+          sed \
+            -e "s|__VERSION__|${VERSION}|g" \
+            -e "s|__SHA256__|${ZIP_SHA}|g" \
+            dist/baobuddy.rb.template > out/baobuddy.rb
+
+      - name: Clean up signing keychain
+        if: always()
+        run: |
+          security delete-keychain "$RUNNER_TEMP/baobuddy-signing.keychain-db" 2>/dev/null || true
+
+      - name: Attest build provenance
+        uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8
+        with:
+          subject-path: |
+            out/BaoBuddyHelper-*-macos.zip
+            out/BaoBuddyHelper-*-macos.dmg
+
+      - name: Publish GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          TAG: ${{ needs.build.outputs.tag }}
+          VERSION: ${{ needs.build.outputs.version }}
+          DRAFT: ${{ needs.build.outputs.draft }}
+        run: |
+          FILES=(
+            "out/BaoBuddyHelper-${VERSION}-macos.zip"
+            "out/BaoBuddyHelper-${VERSION}-macos.dmg"
+            "out/SHA256SUMS.txt"
+            "out/baobuddy-sbom.cdx.json"
+            "out/baobuddy.rb"
+          )
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            # Replacing assets is allowed only on a draft; a published release is never changed.
+            if [ "$(gh release view "$TAG" --json isDraft --jq .isDraft)" != "true" ]; then
+              echo "::error::Release $TAG is already published; refusing to replace its assets."
+              exit 1
+            fi
+            gh release upload "$TAG" "${FILES[@]}" --clobber
+          else
+            ARGS=("$TAG" "${FILES[@]}" --title "BaoBuddy for Mac ${VERSION}" --generate-notes --target "$GITHUB_SHA")
+            if [ "$DRAFT" = "true" ]; then
+              ARGS+=(--draft)
+            fi
+            gh release create "${ARGS[@]}"
+          fi

@@ -1,0 +1,12 @@
+BaoBuddy vervangt permanente geheimen en wachtwoorden door kortlevende machtigingen met hardwarebeveiliging voor je OpenBao- of Vault-server.
+
+Je apparaat maakt in de Secure Enclave voor elke server een aparte, niet-exporteerbare EC P-256-sleutel aan, beveiligd met biometrie. Als jij of een geautomatiseerde workflow tijdelijke toegang nodig heeft, toont BaoBuddy precies de server, doelhost, policy's, duur en auditreden voordat er een ES256-JWT wordt ondertekend die 30 seconden geldig is.
+
+BELANGRIJKSTE FUNCTIES
+• Authenticatie met hardwarebeveiliging: niet-exporteerbare P-256-sleutels, bij elke goedkeuring beveiligd met biometrie.
+• Afgebakende, tijdgebonden machtigingen: maak niet-verlengbare orphan-tokens aan die beperkt zijn tot expliciete policy's en looptijden op de server.
+• Ingebouwde demomodus: tik bij de start op 'Probeer demo' om de volledige workflow voor goedkeuren, extensies voor inloggegevens en intrekken in het geheugen te verkennen, zonder een server te installeren.
+• Meerdere servers, klaar voor organisaties: koppel meerdere omgevingen met vastgepinde TLS-certificaten, optionele namespaces, regels voor auditredenen en declaratieve extensies voor inloggegevens.
+• Direct token en externe SSH-levering: kopieer een kortlevend token (klembord verloopt na 2 minuten, alleen lokaal, intrekken met één tik) of lever machtigingen en tijdelijke SSH-gebruikerscertificaten direct aan een externe host via SSH met een vastgepinde sleutel.
+• Live Activities: volg de aftelling van actieve machtigingen op je toegangsscherm en in het Dynamic Island. Server- en bereikgegevens worden automatisch verborgen als het apparaat vergrendeld is.
+• Privacy voorop: geen analyse, geen tracking, geen servers van derden. Alles blijft tussen je apparaat en je infrastructuur.

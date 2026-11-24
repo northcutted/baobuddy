@@ -1,0 +1,42 @@
+name: Bug Report
+description: Report a bug in BaoBuddy (iOS, macOS, CLI, MCP, or baobuddy-receiver)
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please **never** paste OpenBao tokens, private keys, or sensitive internal secrets.
+        For security vulnerabilities, see `SECURITY.md` instead of opening a public issue.
+  - type: dropdown
+    id: component
+    attributes:
+      label: Component
+      options:
+        - macOS Menu Bar App
+        - CLI (`bao-buddy`)
+        - iOS App
+        - MCP Server (`bao-buddy mcp`)
+        - Go Receiver (`baobuddy-receiver`)
+        - OpenTofu / Terraform Builder
+    validations:
+      required: true
+  - type: textarea
+    id: diagnostics
+    attributes:
+      label: Environment & Diagnostics
+      description: Paste output from BaoBuddy Settings → About → Copy Diagnostics (or `bao version` / OS version).
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to Reproduce
+      placeholder: |
+        1. ...
+        2. ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected vs Actual Behavior
+    validations:
+      required: true

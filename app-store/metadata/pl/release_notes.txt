@@ -1,0 +1,5 @@
+Pierwsza publiczna beta (v0.1.0):
+• Chronione sprzętowo uwierzytelnianie JWT ES256 z Secure Enclave dla serwerów OpenBao i Vault
+• Wbudowany tryb demo („Wypróbuj demo”) do natychmiastowego poznania aplikacji offline, bez serwera
+• Dynamiczne arkusze zatwierdzania polityk, rozszerzenia poświadczeń, parowanie przez kod QR i odliczanie w Aktywnościach na żywo
+• Tryb tokenu bezpośredniego ze schowkiem na 2 minuty (tylko lokalnie) oraz dostarczanie do zdalnego hosta SSH z odwoływaniem przez accessor

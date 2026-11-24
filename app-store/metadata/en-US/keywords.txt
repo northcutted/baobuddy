@@ -1,0 +1,1 @@
+openbao,vault,secrets,ssh,devops,security,jwt,biometric,token,sysadmin,infrastructure,developer

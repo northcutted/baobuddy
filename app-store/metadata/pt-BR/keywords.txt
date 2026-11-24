@@ -1,0 +1,1 @@
+segredos,senhas,ssh,devops,segurança,jwt,token,sysadmin,infraestrutura,acesso,autenticação

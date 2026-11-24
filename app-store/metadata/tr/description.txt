@@ -1,0 +1,12 @@
+BaoBuddy, kalıcı gizli bilgileri ve parolaları OpenBao veya Vault sunucunuz için donanım destekli, kısa ömürlü izinlerle değiştirir.
+
+Cihazınız her sunucu için Secure Enclave içinde, biyometriyle korunan ve dışa aktarılamayan ayrı bir EC P-256 anahtarı oluşturur. Siz veya otomatik bir iş akışı geçici erişime ihtiyaç duyduğunuzda BaoBuddy, 30 saniyelik bir ES256 JWT imzalamadan önce tam sunucuyu, hedef ana bilgisayarı, ilkeleri, süreyi ve denetim gerekçesini gösterir.
+
+TEMEL ÖZELLİKLER
+• Donanım Destekli Kimlik Doğrulama: Her onayda biyometriyle korunan, dışa aktarılamayan P-256 anahtarları.
+• Kapsamlı, Süre Sınırlı İzinler: Sunucu tarafındaki açık ilkeler ve sürelerle sınırlandırılmış, yenilenemeyen, sahipsiz (orphan) token'lar oluşturun.
+• Yerleşik Demo Modu: Sunucu kurmadan tüm onay, kimlik bilgisi uzantısı ve iptal iş akışını bellekte keşfetmek için açılışta "Demoyu Dene"ye dokunun.
+• Çoklu Sunucu ve Kurumsal Kullanıma Hazır: Sabitlenmiş TLS sertifikaları, isteğe bağlı ad alanları, denetim gerekçesi kuralları ve bildirimsel kimlik bilgisi uzantılarıyla birden çok ortama bağlanın.
+• Doğrudan Token ve Uzak SSH Teslimatı: Kısa ömürlü bir token'ı kopyalayın (2 dakika sonra silinen, yalnızca yerel pano ve tek dokunuşla iptal) veya izinleri ve geçici SSH kullanıcı sertifikalarını sabitlenmiş anahtarlı SSH üzerinden doğrudan uzak bir ana bilgisayara teslim edin.
+• Canlı Etkinlikler: Etkin izinlerin geri sayımını Kilitli Ekran'da ve Dinamik Ada'da izleyin; cihaz kilitliyken sunucu ve kapsam ayrıntıları otomatik olarak gizlenir.
+• Önce Gizlilik: Sıfır analiz, sıfır izleme, sıfır üçüncü taraf sunucu. Her şey cihazınız ile altyapınız arasında kalır.

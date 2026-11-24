@@ -1,0 +1,264 @@
+# Named "PR Checks" with a "CI Gate" job because the iOS release platform
+# (northcutted/ios-release-workflows) requires both: the Main ruleset makes "CI Gate" a required
+# check, and `ios-release controls-configure` checks for a passing "PR Checks" run.
+name: PR Checks
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+concurrency:
+  group: pr-checks-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+permissions:
+  contents: read
+jobs:
+  plan:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    outputs:
+      required: ${{ steps.select.outputs.required }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 2
+          persist-credentials: false
+      - id: select
+        env:
+          SCOPED_PR_CI: ${{ vars.BAOBUDDY_SCOPED_PR_CI }}
+        run: python3 -I scripts/ci/checks.py plan
+  ios-ci:
+    needs: plan
+    if: contains(fromJSON(needs.plan.outputs.required), 'ios-ci')
+    uses: northcutted/ios-release-workflows/.github/workflows/ci.yml@a3c32bcae61a8a174f3c5ea6a4ba0b623aaaf33a
+    with:
+      config: .github/ios-release.json
+      platform_revision: a3c32bcae61a8a174f3c5ea6a4ba0b623aaaf33a
+      source: ${{ github.sha }}
+      prefix: baobuddy-${{ github.run_id }}-${{ github.run_attempt }}
+  core-and-mac:
+    needs: plan
+    if: contains(fromJSON(needs.plan.outputs.required), 'core-and-mac')
+    name: BaoBuddyCore, macOS Helper & SBOM
+    runs-on: macos-15
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5.6.0
+        with:
+          go-version: "1.24"
+          cache: false
+      - name: Run SwiftPM tests
+        run: swift test --force-resolved-versions
+      - name: Install OpenBao & HashiCorp Vault for live Swift JWT E2E
+        run: |
+          mkdir -p "$HOME/.local/bin"
+          BAO_VER="2.2.0"
+          BAO_SHA256="34854fc2afa1275dcff5a52a47dd988aa2d2b9f48dbab8c2fc0c238174de06c5"
+          curl -fsSL "https://github.com/openbao/openbao/releases/download/v${BAO_VER}/bao_${BAO_VER}_Darwin_arm64.tar.gz" -o /tmp/bao.tar.gz
+          echo "${BAO_SHA256}  /tmp/bao.tar.gz" | shasum -a 256 -c -
+          tar -xzf /tmp/bao.tar.gz -C "$HOME/.local/bin" bao
+
+          VAULT_VER="1.19.0"
+          VAULT_SHA256="b8c2b2a2cee3214edfa2f228a9c2ff4228c60053a9a773bf638e04bf9b61911e"
+          curl -fsSL "https://releases.hashicorp.com/vault/${VAULT_VER}/vault_${VAULT_VER}_darwin_arm64.zip" -o /tmp/vault.zip
+          echo "${VAULT_SHA256}  /tmp/vault.zip" | shasum -a 256 -c -
+          unzip -o /tmp/vault.zip vault -d "$HOME/.local/bin"
+          chmod +x "$HOME/.local/bin/bao" "$HOME/.local/bin/vault"
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+      - name: Run live OpenBao + Swift ES256 JWT + receiver E2E
+        run: bash scripts/integration-test-openbao.sh
+      - name: Run live HashiCorp Vault + Swift ES256 JWT + receiver E2E
+        run: VAULT_BIN=vault bash scripts/integration-test-openbao.sh
+      - name: Check the current Swift clients' wire format against the current receiver
+        run: bash scripts/integration-test-openbao.sh --wire
+      - name: Find published compatibility baselines
+        id: peers
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -eo pipefail
+          gh api --paginate --slurp "repos/$GITHUB_REPOSITORY/releases?per_page=100" | python3 -I scripts/ci/released-peers.py
+      - name: Check out released ios source
+        if: steps.peers.outputs.ios != ''
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: refs/tags/${{ steps.peers.outputs.ios }}
+          path: compat/ios
+          persist-credentials: false
+      - name: Test the released ios encoder with the current receiver
+        if: steps.peers.outputs.ios != ''
+        env:
+          CLIENT_SOURCE_DIR: ${{ github.workspace }}/compat/ios
+        run: bash scripts/integration-test-openbao.sh --wire
+      - name: Check out released helper source
+        if: steps.peers.outputs.helper != ''
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: refs/tags/${{ steps.peers.outputs.helper }}
+          path: compat/helper
+          persist-credentials: false
+      - name: Test the released helper encoder with the current receiver
+        if: steps.peers.outputs.helper != ''
+        env:
+          CLIENT_SOURCE_DIR: ${{ github.workspace }}/compat/helper
+        run: bash scripts/integration-test-openbao.sh --wire
+      - name: Check out released receiver source
+        if: steps.peers.outputs.receiver != ''
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: refs/tags/${{ steps.peers.outputs.receiver }}
+          path: compat/receiver
+          persist-credentials: false
+      - name: Test the current encoder with the released receiver
+        if: steps.peers.outputs.receiver != ''
+        env:
+          RECEIVER_SOURCE_DIR: ${{ github.workspace }}/compat/receiver/receiver
+        run: bash scripts/integration-test-openbao.sh --wire
+      - name: Build BaoBuddyHelper release binary
+        run: swift build -c release --product BaoBuddyHelper --force-resolved-versions
+      - name: Generate CycloneDX 1.5 SBOM
+        run: |
+          swift package show-dependencies --format json > deps.json
+          python3 -I scripts/sbom.py deps.json baobuddy-sbom.cdx.json
+      - name: Upload SBOM artifact
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: baobuddy-sbom-cdx
+          path: baobuddy-sbom.cdx.json
+          retention-days: 90
+  receiver-and-e2e:
+    needs: plan
+    if: contains(fromJSON(needs.plan.outputs.required), 'receiver-and-e2e')
+    name: Receiver (Go) & Live OpenBao E2E
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5.6.0
+        with:
+          go-version: "1.24"
+          cache: false
+      - name: Test and cross-compile standalone baobuddy-receiver
+        working-directory: receiver
+        run: |
+          make test
+          make dist
+          cp dist/SHA256SUMS.txt "$RUNNER_TEMP/receiver-expected.txt"
+          if make dist PLATFORMS="linux/amd64 invalid/amd64 linux/arm64"; then
+            echo "Receiver distribution accepted a failed target" >&2
+            exit 1
+          fi
+          cmp "$RUNNER_TEMP/receiver-expected.txt" dist/SHA256SUMS.txt
+          (cd dist && shasum -a 256 -c SHA256SUMS.txt)
+      - name: Install OpenBao for live E2E test
+        run: |
+          BAO_VER="2.2.0"
+          # From the release's checksums-linux.txt; update both together.
+          BAO_SHA256="d805141e5de99f6742315af2ec8f0111e887f3e0819fdb1fd3fcac9ef983f26f"
+          curl -fsSL "https://github.com/openbao/openbao/releases/download/v${BAO_VER}/bao_${BAO_VER}_Linux_x86_64.tar.gz" -o /tmp/bao.tar.gz
+          echo "${BAO_SHA256}  /tmp/bao.tar.gz" | sha256sum -c -
+          mkdir -p "$HOME/.local/bin"
+          tar -xzf /tmp/bao.tar.gz -C "$HOME/.local/bin" bao
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+          "$HOME/.local/bin/bao" version
+      - name: Run live OpenBao + receiver E2E integration test
+        run: bash scripts/integration-test-openbao.sh
+  vault-e2e:
+    needs: plan
+    if: contains(fromJSON(needs.plan.outputs.required), 'vault-e2e')
+    name: Receiver (Go) & Live HashiCorp Vault E2E
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5.6.0
+        with:
+          go-version: "1.24"
+          cache: false
+      - name: Install HashiCorp Vault for live E2E test
+        run: |
+          VAULT_VER="1.19.0"
+          # From releases.hashicorp.com/vault/1.19.0/vault_1.19.0_SHA256SUMS; update both together.
+          VAULT_SHA256="9df904271319452bbb37825cfe50726383037550cc04b7c2d0ab09e2f08f82a1"
+          curl -fsSL "https://releases.hashicorp.com/vault/${VAULT_VER}/vault_${VAULT_VER}_linux_amd64.zip" -o /tmp/vault.zip
+          echo "${VAULT_SHA256}  /tmp/vault.zip" | sha256sum -c -
+          mkdir -p "$HOME/.local/bin"
+          unzip -o /tmp/vault.zip vault -d "$HOME/.local/bin"
+          chmod +x "$HOME/.local/bin/vault"
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+          "$HOME/.local/bin/vault" version
+      - name: Run live HashiCorp Vault + receiver E2E integration test
+        run: VAULT_BIN=vault bash scripts/integration-test-openbao.sh
+  ios-app-tests:
+    needs: plan
+    if: contains(fromJSON(needs.plan.outputs.required), 'ios-app-tests')
+    # The platform's ios-ci runs only BaoBuddyTests, on one iPhone. This job runs the whole
+    # BaoBuddy scheme (unit tests plus BaoBuddyUITests) on an iPhone and an iPad, so iPad-only
+    # layout tests actually execute. Xcode and the iOS runtime come from .github/ios-release.json.
+    name: iOS App & iPad Layout Tests
+    runs-on: xcode-27
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Select Xcode and create iPhone and iPad simulators
+        run: |
+          set -euo pipefail
+          developer_dir=$(jq -r .xcode.path .github/ios-release.json)
+          runtime_version=$(jq -r .xcode.runtime .github/ios-release.json)
+          export DEVELOPER_DIR="$developer_dir"
+          xcodebuild -version
+          runtime="com.apple.CoreSimulator.SimRuntime.iOS-${runtime_version//./-}"
+          iphone=$(xcrun simctl create "CI iPhone 18 Pro" com.apple.CoreSimulator.SimDeviceType.iPhone-18-Pro "$runtime")
+          ipad=$(xcrun simctl create "CI iPad Pro 13-inch (M5)" com.apple.CoreSimulator.SimDeviceType.iPad-Pro-13-inch-M5-12GB "$runtime")
+          # Finish first-boot setup before testing, so UI tests don't race a busy new simulator.
+          for id in "$iphone" "$ipad"; do xcrun simctl bootstatus "$id" -b; done
+          {
+            echo "DEVELOPER_DIR=$developer_dir"
+            echo "IOS_SIM=platform=iOS Simulator,id=$iphone"
+            echo "IPAD_SIM=platform=iOS Simulator,id=$ipad"
+            echo "CI_SIMULATORS=$iphone $ipad"
+          } >> "$GITHUB_ENV"
+      - name: Run unit and UI tests on iPhone and iPad
+        run: make test-ios TEST_RESULTS_DIR=build/test-results
+      - name: Upload test results
+        if: failure()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: baobuddy-ios-test-results
+          path: build/test-results/
+          retention-days: 14
+      - name: Delete CI simulators
+        if: always()
+        run: |
+          for id in ${CI_SIMULATORS:-}; do xcrun simctl delete "$id" || true; done
+  gate:
+    name: CI Gate
+    # Always reports, so a skipped or cancelled job can't let a change through.
+    if: always()
+    needs:
+      - plan
+      - ios-ci
+      - ios-app-tests
+      - core-and-mac
+      - receiver-and-e2e
+      - vault-e2e
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Validate every job against the CI plan
+        env:
+          RESULTS: ${{ toJSON(needs) }}
+        run: python3 -I scripts/ci/checks.py gate

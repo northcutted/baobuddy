@@ -1,0 +1,22 @@
+name: Feature Request
+description: Suggest an improvement, new credential extension template, or platform integration
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem / Use Case
+      description: Describe what workflow you are trying to support with OpenBao or HashiCorp Vault.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed Solution
+    validations:
+      required: true
+  - type: textarea
+    id: security
+    attributes:
+      label: Security Considerations
+      description: Any trust-boundary, audit, or least-privilege implications?

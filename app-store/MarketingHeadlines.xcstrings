@@ -1,0 +1,654 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "01_Dashboard" : {
+      "comment" : "App Store screenshot 1 headline, over the Grants screen in Demo Mode with an active short-lived grant on a build machine. Two short lines. Agents are automated tools (such as AI coding agents) that use the secrets.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أسرار قصيرة الأجل\nلوكلائك"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kurzlebige Secrets\nfür deine Agents"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Short-lived secrets\nfor your agents"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Secretos de corta duración\npara tus agentes"
+          }
+        },
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Secretos de corta duración\npara tus agentes"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Des secrets éphémères\npour vos agents"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Segreti a breve durata\nper i tuoi agenti"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "エージェントに\n期限付きのシークレットを"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "에이전트를 위한\n단기 시크릿"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kortlevende geheimen\nvoor je agents"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Krótkotrwałe sekrety\ndla Twoich agentów"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Segredos de curta duração\npara seus agentes"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Segredos de curta duração\npara os seus agentes"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kortlivade hemligheter\nför dina agenter"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajanlarınız için\nkısa ömürlü gizli bilgiler"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "为你的智能体\n提供短期机密"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "為你的代理程式\n提供短期機密"
+          }
+        }
+      }
+    },
+    "02_Approve" : {
+      "comment" : "App Store screenshot 2 headline, over the approval sheet that lists exactly what a grant includes. Two short lines. Face ID is Apple's product name.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اطّلع على ما تمنحه بالضبط\nووافق باستخدام Face ID"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sieh genau, was du freigibst\nGenehmige mit Face ID"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "See exactly what you grant\nApprove with Face ID"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mira exactamente qué autorizas\nAprueba con Face ID"
+          }
+        },
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mira exactamente qué autorizas\nAprueba con Face ID"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voyez ce que vous autorisez\nApprouvez avec Face ID"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vedi esattamente cosa autorizzi\nApprova con Face ID"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "許可する内容をすべて確認\nFace ID で承認"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "허용하는 범위를 정확히 확인\nFace ID로 승인"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zie precies wat je toestaat\nKeur goed met Face ID"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zobacz, co przyznajesz\nZatwierdź przez Face ID"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Veja tudo o que você concede\nAprove com Face ID"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Veja exatamente o que concede\nAprove com o Face ID"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se exakt vad du godkänner\nGodkänn med Face ID"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ne verdiğinizi tam olarak görün\nFace ID ile onaylayın"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "清楚看到你授予的权限\n使用 Face ID 批准"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "清楚看到你授予的權限\n使用 Face ID 核准"
+          }
+        }
+      }
+    },
+    "03_Settings" : {
+      "comment" : "App Store screenshot 3 headline, over Settings with the server's approval key. Two short lines. OpenBao, Vault and Secure Enclave are product names.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يعمل مع OpenBao وVault\nويبقى المفتاح في Secure Enclave"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Für OpenBao und Vault\nSchlüssel bleibt in der Secure Enclave"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Works with OpenBao and Vault\nKey stays in the Secure Enclave"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Funciona con OpenBao y Vault\nLa clave no sale del Secure Enclave"
+          }
+        },
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Funciona con OpenBao y Vault\nLa clave no sale del Secure Enclave"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compatible OpenBao et Vault\nLa clé reste dans la Secure Enclave"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Funziona con OpenBao e Vault\nLa chiave resta nel Secure Enclave"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OpenBao と Vault に対応\nキーは Secure Enclave に保管"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OpenBao 및 Vault 지원\n키는 Secure Enclave에 보관"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Werkt met OpenBao en Vault\nSleutel blijft in de Secure Enclave"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Działa z OpenBao i Vault\nKlucz zostaje w Secure Enclave"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Funciona com OpenBao e Vault\nA chave fica no Secure Enclave"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Funciona com OpenBao e Vault\nA chave fica no Secure Enclave"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fungerar med OpenBao och Vault\nNyckeln stannar i Secure Enclave"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OpenBao ve Vault ile çalışır\nAnahtar Secure Enclave'de kalır"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "支持 OpenBao 和 Vault\n密钥始终留在 Secure Enclave"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "支援 OpenBao 與 Vault\n金鑰始終留在 Secure Enclave"
+          }
+        }
+      }
+    },
+    "04_DirectToken" : {
+      "comment" : "App Store screenshot 4 headline, over a short-lived token and database credentials shown in the app (a direct token: for the user, not sent to a remote host). Two short lines.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أصدر رمزًا لنفسك\nتنتهي صلاحيته تلقائيًا"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stell dir selbst ein Token aus\nEs läuft von allein ab"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mint a token for yourself\nIt expires on its own"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Emite un token para ti\nCaduca por sí solo"
+          }
+        },
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Emite un token para ti\nVence por sí solo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un jeton rien que pour vous\nIl expire tout seul"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Genera un token per te\nScade da solo"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自分用のトークンを発行\n期限が来れば自動で失効"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "나를 위한 토큰 발급\n시간이 지나면 자동 만료"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Maak een token voor jezelf\nHet verloopt vanzelf"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Utwórz token dla siebie\nWygaśnie sam"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Emita um token para você\nEle expira sozinho"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Emita um token para si\nExpira automaticamente"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skapa en token åt dig själv\nDen löper ut av sig själv"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kendiniz için token oluşturun\nSüresi kendiliğinden dolar"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "为自己签发令牌\n到期自动失效"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "為自己簽發權杖\n到期自動失效"
+          }
+        }
+      }
+    },
+    "05_Activity" : {
+      "comment" : "App Store screenshot 5 headline, over Recent Activity, the on-device log of approved and revoked grants. Two short lines; the second says the log keeps only metadata, never tokens or keys.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "كل منحة مسجّلة\nبيانات وصفية فقط، بلا أسرار"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jede Freigabe protokolliert\nNur Metadaten, nie Secrets"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Every grant on record\nMetadata only, never secrets"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cada autorización registrada\nSolo metadatos, nunca secretos"
+          }
+        },
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cada autorización registrada\nSolo metadatos, nunca secretos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chaque autorisation notée\nMétadonnées, jamais de secrets"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ogni autorizzazione registrata\nSolo metadati, mai segreti"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "すべてのグラントを記録\n保存するのはメタデータだけ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "모든 접근 권한을 기록\n시크릿 없이 메타데이터만"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elke machtiging vastgelegd\nAlleen metadata, nooit geheimen"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Każde uprawnienie w rejestrze\nTylko metadane, nigdy sekrety"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cada concessão registrada\nSó metadados, nunca segredos"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cada concessão registada\nSó metadados, nunca segredos"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Varje behörighet loggas\nBara metadata, aldrig hemligheter"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Her izin kayıt altında\nYalnızca meta veri, gizli bilgi asla"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "每次授权都有记录\n只记元数据，绝不存机密"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "每次授權都有紀錄\n只記中繼資料，絕不存機密"
+          }
+        }
+      }
+    },
+    "06_ServerSetup" : {
+      "comment" : "App Store screenshot 6 headline, over Guided Server Setup, whose recommended option is scanning a pairing QR code shown by BaoBuddy on the Mac. Two short lines.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إعداد في دقائق\nامسح رمز QR من جهاز Mac"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In Minuten eingerichtet\nQR-Code vom Mac scannen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Set up in minutes\nScan a QR code from your Mac"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configúralo en minutos\nEscanea un código QR desde tu Mac"
+          }
+        },
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configúralo en minutos\nEscanea un código QR desde tu Mac"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prêt en quelques minutes\nScannez le code QR du Mac"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pronto in pochi minuti\nScansiona un codice QR dal Mac"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "数分でセットアップ\nMac の QR コードをスキャン"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "몇 분 만에 설정\nMac의 QR 코드를 스캔"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In een paar minuten klaar\nScan een QR-code vanaf je Mac"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Konfiguracja w kilka minut\nZeskanuj kod QR z Maca"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configure em minutos\nEscaneie um código QR do Mac"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configure em minutos\nLeia um código QR a partir do Mac"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klart på några minuter\nSkanna en QR-kod från din Mac"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dakikalar içinde kurulum\nMac'inizden QR kodu tarayın"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "几分钟即可完成设置\n扫描 Mac 上的 QR 码"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "幾分鐘即可完成設定\n掃描 Mac 上的 QR 碼"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

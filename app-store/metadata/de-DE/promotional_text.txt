@@ -1,0 +1,1 @@
+Genehmige zeitlich begrenzte OpenBao- und Vault-Freigaben per hardwaregestützter Biometrie – probiere gleich den integrierten Demomodus aus.

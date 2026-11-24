@@ -1,0 +1,1 @@
+Approva autorizzazioni OpenBao e Vault a tempo con la biometria protetta dall'hardware: prova subito la modalità demo integrata.

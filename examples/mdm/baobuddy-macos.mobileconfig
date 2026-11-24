@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>PayloadContent</key>
+	<array>
+		<dict>
+			<key>PayloadDescription</key>
+			<string>Configures managed OpenBao / Vault server profiles and governance controls for BaoBuddy on macOS.</string>
+			<key>PayloadDisplayName</key>
+			<string>BaoBuddy Managed Settings</string>
+			<key>PayloadIdentifier</key>
+			<string>com.example.baobuddy.managed.settings</string>
+			<key>PayloadOrganization</key>
+			<string>Example Corp</string>
+			<key>PayloadType</key>
+			<string>com.northcutt.BaoBuddy.Helper</string>
+			<key>PayloadUUID</key>
+			<string>11111111-2222-3333-4444-555555555555</string>
+			<key>PayloadVersion</key>
+			<integer>1</integer>
+			<key>lock_profiles</key>
+			<true/>
+			<key>disable_clipboard</key>
+			<false/>
+			<key>enforce_tls_pinning</key>
+			<true/>
+			<key>require_reason_for_elevated</key>
+			<true/>
+			<!--
+			  Replace REPLACE_WITH_INTERNAL_CA_PEM and REPLACE_WITH_USERNAME (or generate
+			  profiles_json directly with `bao-buddy export-profile` or OpenTofu `baobuddy_profiles`).
+			  Leaving `jwt_auth.audience` empty ("") derives the exact trust-bound `baobuddy://...`
+			  audience (including the SHA-256 `ca_pem` pin hash and `mtls_client_identity` hash)
+			  automatically from the deployment fields, matching `bao-buddy server-setup` and OpenTofu.
+			-->
+			<key>profiles_json</key>
+			<string>[{"id":"prod-us-east","version":1,"name":"Prod US-East","openbao":{"address":"https://vault.corp.example:8200","namespace":"admin/prod-us-east","ca_pem":"-----BEGIN CERTIFICATE-----\nREPLACE_WITH_INTERNAL_CA_PEM\n-----END CERTIFICATE-----","mtls_client_identity":"","jwt_auth":{"mount":"jwt-REPLACE_WITH_USERNAME","role":"granter","issuer":"bao-granter","audience":"","subject":"REPLACE_WITH_USERNAME"},"token_roles":{"local":"grant-REPLACE_WITH_USERNAME","remote":"grant-REPLACE_WITH_USERNAME"},"grant_policies":[{"name":"db-readonly","label":"Database Read-Only","elevated":false,"default_selected":true},{"name":"k8s-deploy","label":"Kubernetes Deploy","elevated":true,"default_selected":false}],"audit_policy":{"require_reason":false,"require_reason_for_elevated":true,"reason_pattern":"^(INC|CHG|JIRA)-[0-9]+","reason_placeholder":"CHG-12345 — brief change summary"},"max_hours":4,"keys":[],"ssh":{"role":"","hosts":[]},"github_app_item":""}}]</string>
+		</dict>
+	</array>
+	<key>PayloadDescription</key>
+	<string>Deploys BaoBuddy with locked enterprise OpenBao/Vault profiles, mandatory TLS pinning, and change-ticket enforcement on elevated grants.</string>
+	<key>PayloadDisplayName</key>
+	<string>BaoBuddy Enterprise Configuration</string>
+	<key>PayloadIdentifier</key>
+	<string>com.example.baobuddy.managed</string>
+	<key>PayloadOrganization</key>
+	<string>Example Corp</string>
+	<key>PayloadRemovalDisallowed</key>
+	<false/>
+	<key>PayloadScope</key>
+	<string>System</string>
+	<key>PayloadType</key>
+	<string>Configuration</string>
+	<key>PayloadUUID</key>
+	<string>AAAAAAAA-BBBB-CCCC-DDDD-EEEEEEEEEEEE</string>
+	<key>PayloadVersion</key>
+	<integer>1</integer>
+</dict>
+</plist>

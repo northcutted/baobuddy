@@ -1,0 +1,1 @@
+生物辨識 Vault 與 OpenBao 金鑰

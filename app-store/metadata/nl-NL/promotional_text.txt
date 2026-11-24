@@ -1,0 +1,1 @@
+Keur tijdgebonden OpenBao- en Vault-machtigingen goed met biometrie die door hardware wordt beveiligd. Probeer meteen de ingebouwde demomodus.

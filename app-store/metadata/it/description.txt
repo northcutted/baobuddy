@@ -1,0 +1,12 @@
+BaoBuddy sostituisce segreti permanenti e password con autorizzazioni di breve durata protette dall'hardware per il tuo server OpenBao o Vault.
+
+Il dispositivo genera nel Secure Enclave una chiave EC P-256 non esportabile e separata per ogni server, protetta dalla biometria. Quando tu o un workflow automatizzato avete bisogno di un accesso temporaneo, BaoBuddy mostra server, host di destinazione, policy, durata e motivo di audit esatti prima di firmare un JWT ES256 valido 30 secondi.
+
+FUNZIONALITÀ PRINCIPALI
+• Autenticazione protetta dall'hardware: chiavi P-256 non esportabili, sbloccate con la biometria a ogni approvazione.
+• Autorizzazioni limitate e a tempo: genera token orfani non rinnovabili, vincolati a policy e durate esplicite definite sul server.
+• Modalità demo integrata: tocca "Prova la demo" all'avvio per esplorare in memoria l'intero flusso di approvazione, estensioni credenziali e revoca, senza installare un server.
+• Più server, pronto per l'azienda: collega più ambienti con certificati TLS fissati, namespace facoltativi, regole per il motivo di audit ed estensioni credenziali dichiarative.
+• Token diretto e consegna SSH remota: copia un token di breve durata (con scadenza degli appunti dopo 2 minuti, solo locale, e revoca con un tocco) oppure consegna autorizzazioni e certificati utente SSH temporanei direttamente a un host remoto tramite SSH con chiave fissata.
+• Attività in tempo reale: segui il conto alla rovescia delle autorizzazioni attive sulla schermata di blocco e nella Dynamic Island, con i dettagli di server e ambito nascosti automaticamente quando il dispositivo è bloccato.
+• Privacy prima di tutto: zero analisi, zero tracciamento, zero server di terze parti. Tutto resta tra il tuo dispositivo e la tua infrastruttura.

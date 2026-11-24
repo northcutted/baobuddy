@@ -1,0 +1,23 @@
+FROM golang:1.24-alpine AS builder
+WORKDIR /src
+COPY receiver/go.mod ./
+COPY receiver/cmd ./cmd
+COPY receiver/internal ./internal
+RUN CGO_ENABLED=0 go build -trimpath -ldflags="-s -w -X main.version=0.1.0" -o /out/baobuddy-receiver ./cmd/baobuddy-receiver
+
+FROM alpine:3.21
+RUN apk add --no-cache ca-certificates && \
+    mkdir -p /etc/baobuddy /var/lib/baobuddy /var/log/baobuddy && \
+    chmod 0750 /var/lib/baobuddy
+COPY --from=builder /out/baobuddy-receiver /usr/local/bin/baobuddy-receiver
+RUN cat <<'EOF' > /etc/baobuddy/receiver.json
+{
+  "openbao_addr": "http://127.0.0.1:8200",
+  "state_dir": "/var/lib/baobuddy",
+  "audit_log_path": "/var/log/baobuddy/audit.jsonl",
+  "metrics_file_path": "/var/lib/baobuddy/baobuddy.prom",
+  "allowed_policies": ["app-read", "db-readonly"],
+  "required_meta": {"on": "remote"}
+}
+EOF
+CMD ["sh", "-c", "baobuddy-receiver --config /etc/baobuddy/receiver.json doctor && tail -f /dev/null"]

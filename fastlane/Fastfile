@@ -1,0 +1,87 @@
+require "json"
+require "open3"
+
+default_platform(:ios)
+
+platform :ios do
+  ROOT = File.expand_path("..", __dir__)
+  CI_CONFIG = JSON.parse(File.read(File.join(ROOT, ".github/ios-release.json"))).freeze
+
+  desc "Capture App Store screenshots on simulator (reads fastlane/Snapfile)"
+  lane :screenshots do |options|
+    screenshot_options = {
+      # Disable code signing for simulator builds — avoids OCSP certificate
+      # validation hangs against Apple servers in headless CI environments.
+      xcargs: "CODE_SIGN_IDENTITY='' CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO -parallel-testing-enabled NO -parallel-testing-worker-count 1 -maximum-concurrent-test-simulator-destinations 1 -collect-test-diagnostics on-failure",
+      buildlog_path: "./fastlane/screenshot_logs",
+      # Retain XCTest screenshots and accessibility trees for a failing device.
+      result_bundle: true,
+      disable_package_automatic_updates: true,
+      sdk: "iphonesimulator",
+      skip_package_dependencies_resolution: true,
+      # The scheme selects only this test; naming it keeps a scheme edit from adding others.
+      only_testing: ["BaoBuddyUITests/ScreenshotTests/testAllScreenshots"]
+    }
+
+    if options[:device]
+      screenshot_options[:devices] = [options[:device]]
+    elsif options[:devices]
+      screenshot_options[:devices] = options[:devices].split(",").map(&:strip)
+    end
+
+    # Optional locale subset. Without this, the lane reads the full locale list
+    # from Snapfile (17 locales for App Store submission).
+    if options[:languages]
+      screenshot_options[:languages] = options[:languages].split(",").map(&:strip)
+    end
+
+    selected_languages = screenshot_options[:languages] || CI_CONFIG.fetch("locales")
+    UI.user_error!("Unknown screenshot locale") unless (selected_languages - CI_CONFIG.fetch("locales")).empty?
+    selected_devices = screenshot_options[:devices] || CI_CONFIG.fetch("screenshot_devices")
+    UI.user_error!("Unknown screenshot device") unless (selected_devices - CI_CONFIG.fetch("screenshot_devices")).empty?
+    if screenshot_options[:devices] || screenshot_options[:languages]
+      # Snapshot's global cleanup deletes every locale and device, even for a subset.
+      screenshot_options[:clear_previous_screenshots] = false
+      selected_languages.product(selected_devices, CI_CONFIG.fetch("screens")).each do |locale, device, screen|
+        path = File.join(ROOT, "app-store/screenshots-raw", locale, "#{device}-#{screen}.png")
+        File.delete(path) if File.file?(path)
+      end
+    end
+    screenshot_options[:ios_version] = ENV.fetch("SIMULATOR_RUNTIME", CI_CONFIG.fetch("xcode").fetch("runtime"))
+    unless ENV["SIMULATOR_UDIDS"]
+      ENV["DEVELOPER_DIR"] = CI_CONFIG.fetch("xcode").fetch("path")
+      # Read stdout only: the toolchain check also runs `swift --version`, whose
+      # "swift-driver version" banner goes to stderr and would corrupt the JSON.
+      udids, status = Open3.capture2("python3", "#{ROOT}/scripts/ios_release.py", "toolchain", "--screenshots", "--destinations-json")
+      UI.user_error!("Could not resolve the screenshot simulators") unless status.success?
+      ENV["SIMULATOR_UDIDS"] = udids.strip
+    end
+    require 'snapshot/test_command_generator'
+    require ENV.fetch("IOS_RELEASE_SIMULATOR_HELPER")
+    # Use the same resolved simulator for preparation, installation and tests.
+    # A destination-only override could prepare a different duplicate device.
+    Snapshot::TestCommandGeneratorBase.singleton_class.prepend(Module.new do
+      def find_device(name, os_version = Snapshot.config[:ios_version])
+        resolved = JSON.parse(ENV.fetch("SIMULATOR_UDIDS"))
+        id = resolved.fetch(name)
+        raise "Invalid simulator UUID" unless id.match?(/\A[0-9A-Fa-f-]{36}\z/)
+        device = FastlaneCore::DeviceManager.simulators.find { |sim| sim.udid.casecmp?(id) }
+        raise "Resolved simulator is unavailable: #{name}" unless device
+        raise "Resolved simulator name differs: #{name}" unless device.name == name
+        raise "Resolved simulator runtime differs: #{name}" unless device.os_version == os_version
+        device
+      end
+    end)
+
+    capture_ios_screenshots(screenshot_options)
+  end
+
+  # Release administration lives only in the pinned public workflow platform.
+  # Keep these command names fail-closed so local automation cannot bypass it.
+  %i[upload_testflight wait_processing app_store_stage request_review metadata_only
+     preflight submit upload_screenshots accessibility].each do |name|
+    lane name do
+      UI.user_error!("Use the verified candidate promotion/deployment workflows (.github/workflows/ios-release.yml)")
+    end
+  end
+end

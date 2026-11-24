@@ -1,0 +1,1 @@
+openbao,vault,ssh,devops,gizli bilgi,güvenlik,jwt,token,sistem yöneticisi,altyapı,parola,secrets

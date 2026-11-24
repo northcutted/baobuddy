@@ -1,0 +1,12 @@
+BaoBuddy remplace les secrets permanents et les mots de passe par des autorisations éphémères, protégées par le matériel, pour votre serveur OpenBao ou Vault.
+
+Votre appareil génère dans la Secure Enclave une clé EC P-256 non exportable distincte pour chaque serveur, protégée par la biométrie. Lorsque vous ou un workflow automatisé avez besoin d’un accès temporaire, BaoBuddy affiche précisément le serveur, l’hôte cible, les politiques, la durée et le motif d’audit avant de signer un JWT ES256 valable 30 secondes.
+
+FONCTIONNALITÉS CLÉS
+• Authentification matérielle : clés P-256 non exportables, protégées par la biométrie à chaque approbation.
+• Autorisations limitées en portée et dans le temps : émettez des jetons orphelins non renouvelables, restreints à des politiques et des durées explicites définies côté serveur.
+• Mode démo intégré : touchez « Essayer la démo » au lancement pour découvrir en mémoire tout le processus d’approbation, d’extensions d’identifiants et de révocation, sans déployer de serveur.
+• Multiserveur et prêt pour l’entreprise : connectez plusieurs environnements avec des certificats TLS épinglés, des espaces de noms facultatifs, des règles de motif d’audit et des extensions d’identifiants déclaratives.
+• Jeton direct et livraison SSH distante : copiez un jeton éphémère (presse-papiers local uniquement, effacé après 2 minutes, révocation en un geste) ou livrez autorisations et certificats utilisateur SSH éphémères directement à un hôte distant via SSH à clé épinglée.
+• Activités en direct : suivez le compte à rebours des autorisations actives sur l’écran verrouillé et dans la Dynamic Island, avec masquage automatique des détails du serveur et de la portée lorsque l’appareil est verrouillé.
+• Confidentialité avant tout : aucune analyse, aucun suivi, aucun serveur tiers. Tout reste entre votre appareil et votre infrastructure.

@@ -1,0 +1,1 @@
+Süre sınırlı OpenBao ve Vault izinlerini donanım destekli biyometriyle onaylayın — yerleşik Demo modunu hemen deneyin.

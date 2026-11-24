@@ -1,0 +1,35 @@
+[Unit]
+Description=BaoBuddy Receiver Grant Expiry Sweep
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=granter
+Group=granter
+UMask=0077
+ExecStart=/usr/local/bin/baobuddy-receiver --config /etc/baobuddy/receiver.json cleanup
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectKernelLogs=true
+ProtectControlGroups=true
+ProtectClock=true
+ProtectHostname=true
+RestrictNamespaces=true
+RestrictRealtime=true
+RestrictSUIDSGID=true
+LockPersonality=true
+MemoryDenyWriteExecute=true
+CapabilityBoundingSet=
+AmbientCapabilities=
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+SystemCallArchitectures=native
+SystemCallFilter=@system-service
+SystemCallFilter=~@privileged @resources
+# The leading "-" lets the unit start on hosts that don't use every optional path.
+ReadWritePaths=/run/baobuddy -/var/log/baobuddy -/var/lib/node_exporter/textfile

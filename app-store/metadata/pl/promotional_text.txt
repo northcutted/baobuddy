@@ -1,0 +1,1 @@
+Zatwierdzaj ograniczone czasowo uprawnienia OpenBao i Vault za pomocą biometrii chronionej sprzętowo — wypróbuj od razu wbudowany tryb demo.

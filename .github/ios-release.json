@@ -1,0 +1,157 @@
+{
+  "repository": "northcutted/baobuddy",
+  "xcode": {
+    "version": "27.2",
+    "build": "27B52",
+    "path": "/Applications/Xcode_27.2.app/Contents/Developer",
+    "runtime": "27.2",
+    "sdk": "27.2"
+  },
+  "compatibility": {
+    "version": "26.6",
+    "build": "17F113",
+    "path": "/Applications/Xcode_26.6.app/Contents/Developer",
+    "runtime": "26.5",
+    "sdk": "26.5"
+  },
+  "test_device": "iPhone 17",
+  "screenshot_devices": [
+    "iPhone 18 Pro Max",
+    "iPad Pro 13-inch (M5)"
+  ],
+  "screenshot_classes": {
+    "iphone": {
+      "names": [
+        "iPhone 18 Pro Max",
+        "iPhone 17 Pro Max"
+      ],
+      "sizes": [
+        [
+          1320,
+          2868
+        ],
+        [
+          1260,
+          2736
+        ]
+      ]
+    },
+    "ipad": {
+      "names": [
+        "iPad Pro 13-inch (M5)"
+      ],
+      "sizes": [
+        [
+          2064,
+          2752
+        ]
+      ]
+    }
+  },
+  "screens": [
+    "01_Dashboard",
+    "02_Approve",
+    "03_Settings",
+    "04_DirectToken",
+    "05_Activity",
+    "06_ServerSetup"
+  ],
+  "locales": [
+    "en-US",
+    "ar-SA",
+    "de-DE",
+    "es-ES",
+    "es-MX",
+    "fr-FR",
+    "it",
+    "ja",
+    "ko",
+    "nl-NL",
+    "pl",
+    "pt-BR",
+    "pt-PT",
+    "sv",
+    "tr",
+    "zh-Hans",
+    "zh-Hant"
+  ],
+  "team_id": "BDQ47H73HH",
+  "schema_version": 1,
+  "default_branch": "main",
+  "project": "BaoBuddy.xcodeproj",
+  "scheme": "BaoBuddy",
+  "test_targets": [
+    "BaoBuddyTests"
+  ],
+  "metadata_path": "app-store/metadata",
+  "screenshots_path": "app-store/screenshots",
+  "accessibility_path": "app-store/accessibility_declarations.json",
+  "localization_catalog": "BaoBuddy/Localizable.xcstrings",
+  "source_workflow": ".github/workflows/main.yml",
+  "upload_adapter": "transporter",
+  "build_number_offset": 0,
+  "qa_checks": [
+    "lint",
+    "localization",
+    "analyze",
+    "test",
+    "test-compatibility"
+  ],
+  "runtime_dependencies": [
+    "swift-nio-ssh"
+  ],
+  "signing_repository": "git@github.com:northcutted/baobuddy-certs.git",
+  "targets": [
+    {
+      "bundle_id": "com.northcutt.BaoBuddy",
+      "profile": "match AppStore com.northcutt.BaoBuddy",
+      "non_exempt_encryption": false,
+      "tracking": false,
+      "entitlements": {}
+    },
+    {
+      "bundle_id": "com.northcutt.BaoBuddy.LiveActivity",
+      "profile": "match AppStore com.northcutt.BaoBuddy.LiveActivity",
+      "non_exempt_encryption": false,
+      "tracking": false,
+      "entitlements": {}
+    }
+  ],
+  "app_store": {
+    "bundle_id": "com.northcutt.BaoBuddy",
+    "release_type": "MANUAL",
+    "phased_release": false,
+    "primary_category": "DEVELOPER_TOOLS",
+    "secondary_category": "UTILITIES",
+    "testflight_groups": [],
+    "age_rating": {},
+    "submission_information": {
+      "export_compliance_uses_encryption": false
+    }
+  },
+  "localization_catalogs": [
+    "BaoBuddy/Localizable.xcstrings",
+    "BaoBuddy/BaoBuddyCore.xcstrings",
+    "BaoBuddy/InfoPlist.xcstrings",
+    "BaoBuddyLiveActivity/Localizable.xcstrings",
+    "BaoBuddyLiveActivity/InfoPlist.xcstrings"
+  ],
+  "localization_locales": [
+    "ar",
+    "de",
+    "es",
+    "es-419",
+    "fr",
+    "it",
+    "ja",
+    "ko",
+    "nl",
+    "pl",
+    "pt-BR",
+    "pt-PT",
+    "sv",
+    "tr",
+    "zh-Hans",
+    "zh-Hant"
+  ]
+}

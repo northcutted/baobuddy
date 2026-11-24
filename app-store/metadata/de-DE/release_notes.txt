@@ -1,0 +1,5 @@
+Erste öffentliche Beta (v0.1.0):
+• Hardwaregestützte ES256-JWT-Authentifizierung über die Secure Enclave für OpenBao- und Vault-Server
+• Integrierter Demomodus („Demo testen“) für sofortige Offline-Rundgänge ohne Server
+• Dynamische Genehmigungsdialoge für Richtlinien, Zugangsdaten-Erweiterungen, QR-Kopplung und Countdowns als Live-Aktivität
+• Direkt-Token-Modus mit nur lokaler 2-Minuten-Zwischenablage und Remote-Zustellung per SSH mit Widerruf über den Accessor

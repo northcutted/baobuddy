@@ -1,0 +1,5 @@
+Första offentliga betaversionen (v0.1.0):
+• Hårdvaruskyddad ES256-JWT-autentisering med Secure Enclave för OpenBao- och Vault-servrar
+• Inbyggt demoläge (”Prova demo”) för en direkt genomgång offline utan server
+• Dynamiska godkännandeblad för policyer, tillägg för inloggningsuppgifter, parkoppling med QR-kod och nedräkning i Live Activity
+• Direkt token-läge med 2-minuters urklipp (endast lokalt) och leverans till SSH-fjärrvärd med återkallning via accessor

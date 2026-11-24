@@ -1,0 +1,59 @@
+# Snapfile — configuration for `fastlane snapshot` / `capture_ios_screenshots`
+# https://docs.fastlane.tools/actions/snapshot/
+# Run it through the pinned platform: `make screenshots` (see the Makefile).
+
+# Device, runtime, and locale choices are shared with CI validation.
+require "json"
+# `__dir__` inside this eval'd file is nil on some Ruby versions, which makes the
+# path depend on the working directory; accept either the fastlane/ or repo root.
+ci_config_path = [
+  File.expand_path("../.github/ios-release.json", __dir__ || Dir.pwd),
+  File.expand_path(".github/ios-release.json", Dir.pwd)
+].find { |path| File.exist?(path) }
+ci_config = JSON.parse(File.read(ci_config_path))
+devices(ci_config.fetch("screenshot_devices"))
+ios_version(ENV.fetch("SIMULATOR_RUNTIME", ci_config.fetch("xcode").fetch("runtime")))
+languages(ci_config.fetch("locales"))
+
+# Dedicated screenshots-only scheme: it runs only BaoBuddyUITests/ScreenshotTests,
+# not the unit tests or the other UI tests, which belong in the PR/main pipeline.
+scheme("BaoBuddyScreenshots")
+
+app_identifier("com.northcutt.BaoBuddy")
+
+# Raw captures, <locale>/<device>-<NN_Name>.png, relative to the repo root.
+# scripts/process_screenshots.py composes them into app-store/screenshots/.
+output_directory("./app-store/screenshots-raw")
+
+# Wipe previous screenshots before each run so stale images never ship.
+clear_previous_screenshots(true)
+
+# The shared adapter waits for only the selected device, after Fastlane's
+# shutdown/configuration step. Its boot wait is bounded and retained in logs.
+# erase_simulator is intentionally omitted; reinstall_app(true) gives enough
+# cleanliness without triggering a full simulator reset.
+reinstall_app(true)
+
+# Status bar overrides are off by default: both fastlane's built-in override and
+# direct `simctl status_bar` calls have been observed hanging on macos-26 runners.
+# Local captures opt in with SCREENSHOT_CLEAN_STATUS_BAR=1 (`make screenshots` sets it
+# unless CI is set): 9:41, full Wi-Fi and cellular bars, 100% battery.
+if ENV["SCREENSHOT_CLEAN_STATUS_BAR"] == "1"
+  override_status_bar(true)
+  override_status_bar_arguments("--time 9:41 --dataNetwork wifi --wifiMode active --wifiBars 3 --cellularMode active --cellularBars 4 --batteryState discharging --batteryLevel 100")
+end
+
+# Don't try to open a browser/HTML summary in headless CI.
+skip_open_summary(true)
+
+# Run one simulator at a time to avoid resource contention on CI runners.
+concurrent_simulators(false)
+
+# Stop on the first test failure rather than collecting broken screenshots.
+stop_after_first_error(true)
+
+# Generic test retries stay disabled. The shared adapter permits one recovery
+# of a recognized XCTest bootstrap failure in a disposable hosted CI job,
+# preserves the first failure, and runs the compiled tests without rebuilding.
+# App assertions and launch failures remain failures.
+number_of_retries(0)

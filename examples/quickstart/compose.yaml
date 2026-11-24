@@ -1,0 +1,34 @@
+# 5-minute BaoBuddy quickstart stack (OpenBao dev server + baobuddy-receiver).
+# For local evaluation only — never run OpenBao `-dev` mode in production.
+
+services:
+  openbao:
+    image: ghcr.io/openbao/openbao:2.2.0
+    command:
+      - server
+      - -dev
+      - -dev-root-token-id=baobuddy-quickstart-root
+      - -dev-listen-address=0.0.0.0:8200
+    ports:
+      - "127.0.0.1:8200:8200"
+    healthcheck:
+      test: ["CMD", "bao", "status", "-address=http://127.0.0.1:8200"]
+      interval: 3s
+      timeout: 3s
+      retries: 10
+
+  receiver:
+    build:
+      context: ../..
+      dockerfile: examples/quickstart/Dockerfile.receiver
+    network_mode: "service:openbao"
+    depends_on:
+      openbao:
+        condition: service_healthy
+    environment:
+      BAO_ADDR: http://127.0.0.1:8200
+    volumes:
+      - receiver-state:/var/lib/baobuddy
+
+volumes:
+  receiver-state:

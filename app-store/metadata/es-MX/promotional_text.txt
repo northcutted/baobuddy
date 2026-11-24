@@ -1,0 +1,1 @@
+Aprueba autorizaciones de OpenBao y Vault con límite de tiempo mediante biometría respaldada por hardware. Prueba ahora el modo demo integrado.
