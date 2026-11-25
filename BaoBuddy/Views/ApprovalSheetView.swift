@@ -259,6 +259,7 @@ struct ApprovalSheetView: View {
                     }
                 }
             }
+            .accessibilityIdentifier("approvalDetails")
             .listStyle(.insetGrouped)
             .navigationTitle("Approve Grant")
             .navigationBarTitleDisplayMode(.inline)

@@ -110,7 +110,9 @@ final class AccessibilityAuditTests: XCTestCase {
         auditScrolling("Grants, active grant", until: revoke, in: app)
 
         // An elevated grant: add the elevated Kubernetes policy.
-        let elevatedPolicy = app.switches.matching(NSPredicate(format: "label BEGINSWITH 'Kubernetes Deploy'")).firstMatch
+        // The active-grant audit ends below the lazy policy rows.
+        scrollToTop(in: app)
+        let elevatedPolicy = app.switches["policy-k8s-deploy"].firstMatch
         XCTAssertTrue(reveal(elevatedPolicy, in: app), "The elevated policy can be reached.")
         let knob = elevatedPolicy.switches.firstMatch.exists ? elevatedPolicy.switches.firstMatch : elevatedPolicy
         for _ in 0..<3 where (knob.value as? String) != "1" {
@@ -354,9 +356,23 @@ final class AccessibilityAuditTests: XCTestCase {
     /// scrolls a long list the other way.
     private func scroll(in app: XCUIApplication, down: Bool, fling: Bool = false) {
         let list = scroller(in: app)
-        let x = edgeX(of: list)
-        let low = list.coordinate(withNormalizedOffset: CGVector(dx: x, dy: 0.75))
-        let high = list.coordinate(withNormalizedOffset: CGVector(dx: x, dy: 0.25))
+        let high: XCUICoordinate
+        let low: XCUICoordinate
+        let approve = app.buttons["approveGrant"]
+        if approve.exists && approve.isHittable {
+            // At AX5 the fixed approve button covers the bottom quarter of the list.
+            let details = app.collectionViews["approvalDetails"]
+            let top = app.navigationBars["Approve Grant"].frame.maxY
+            let height = approve.frame.minY - top
+            let origin = details.coordinate(withNormalizedOffset: .zero)
+            let x = details.frame.width * 0.15
+            high = origin.withOffset(CGVector(dx: x, dy: top - details.frame.minY + height * 0.2))
+            low = origin.withOffset(CGVector(dx: x, dy: top - details.frame.minY + height * 0.8))
+        } else {
+            let x = edgeX(of: list)
+            low = list.coordinate(withNormalizedOffset: CGVector(dx: x, dy: 0.75))
+            high = list.coordinate(withNormalizedOffset: CGVector(dx: x, dy: 0.25))
+        }
         let (from, to) = down ? (low, high) : (high, low)
         if fling {
             from.press(forDuration: 0.05, thenDragTo: to, withVelocity: .fast, thenHoldForDuration: 0)
