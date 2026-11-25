@@ -127,10 +127,11 @@ struct ManualProfileSheetView: View {
 
                 Section("Server") {
                     BaoTextField("Display Name (e.g. Production OpenBao)", text: $profileName)
-                    BaoTextField("Address", text: $address, prompt: "https://openbao.example.com:8200")
+                    BaoTextField("Address", text: $address, prompt: "https://openbao.example.com:8200", accessibilityAxis: .vertical)
                         .textInputAutocapitalization(.never)
                         .autocorrectionDisabled()
                         .keyboardType(.URL)
+                        .submitLabel(.done)
                     BaoTextField("Namespace (optional, e.g. admin/prod)", text: $namespace)
                         .textInputAutocapitalization(.never)
                         .autocorrectionDisabled()

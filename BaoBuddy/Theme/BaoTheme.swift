@@ -309,12 +309,14 @@ extension View {
 struct BaoTextField: View {
     let title: LocalizedStringKey
     var prompt: String?
+    let accessibilityAxis: Axis
     @Binding var text: String
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
-    init(_ title: LocalizedStringKey, text: Binding<String>, prompt: String? = nil) {
+    init(_ title: LocalizedStringKey, text: Binding<String>, prompt: String? = nil, accessibilityAxis: Axis = .horizontal) {
         self.title = title
         self.prompt = prompt
+        self.accessibilityAxis = accessibilityAxis
         self._text = text
     }
 
@@ -325,7 +327,7 @@ struct BaoTextField: View {
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                     .accessibilityHidden(true)
-                TextField(text: $text, prompt: Text(verbatim: "")) {
+                TextField(text: $text, prompt: Text(verbatim: ""), axis: accessibilityAxis) {
                     Text(title)
                 }
                 .accessibilityLabel(Text(title))
